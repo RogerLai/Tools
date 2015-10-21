@@ -7,9 +7,15 @@ jQuery(document).ready(function () {
 			return;
 		}
 		
+		var club_member_dispatch_flag = false
+		if(jQuery("#club_member_dispatch_flag").get(0).checked==true)
+		{
+			club_member_dispatch_flag = true
+		}
+		
 		jQuery.ajax({
 			type: "get",
-			url: "/pick?group_count="+jQuery("#group_count").val()+"&club_member_dispatch_flag="+jQuery("#club_member_dispatch_flag").val(),
+			url: "/pick?group_count="+jQuery("#group_count").val()+"&club_member_dispatch_flag="+club_member_dispatch_flag,
 			success: function (data) {
 				jQuery("#pick_result").html(data);
 			},

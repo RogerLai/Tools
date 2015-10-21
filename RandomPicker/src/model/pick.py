@@ -44,6 +44,9 @@ def get_pick_result(group_count, club_member_dispatch_flag = False):
     
     if index > 0:
         max_row = max_row + 1
+        while index < group_count:
+            result['matrix'][index].append(None)
+            index = index + 1
         
     result['max_row'] = max_row  
     return result 
