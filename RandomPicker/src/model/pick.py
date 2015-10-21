@@ -10,14 +10,18 @@ import random
 from db import staff_db
 
 
-def get_pick_result(group_count, club_member_dispatch_flag = False):
+def get_pick_result(group_count, club_member_dispatch_flag = False, gender_dispatch_flag = False):
     result = {}
     
     all_staff = staff_db.get_all_staff()
     for staff in all_staff:
         v = random.random()
         if club_member_dispatch_flag == True and staff['is_club_member'] == 1:
-            v = v + 1
+            v = v + 100
+            
+        if gender_dispatch_flag == True and staff['gender'] == 2:
+            v = v + 10
+            
         staff['random_value'] = v 
     
     # sort the staff
@@ -52,5 +56,5 @@ def get_pick_result(group_count, club_member_dispatch_flag = False):
     return result 
 
 if __name__ == "__main__":
-    result = get_pick_result(4, True)
+    result = get_pick_result(4, True, True)
     print result

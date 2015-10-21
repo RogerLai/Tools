@@ -13,9 +13,15 @@ jQuery(document).ready(function () {
 			club_member_dispatch_flag = true
 		}
 		
+		var gender_dispatch_flag = false
+		if(jQuery("#gender_dispatch_flag").get(0).checked==true)
+		{
+			gender_dispatch_flag = true
+		}
+		
 		jQuery.ajax({
 			type: "get",
-			url: "/pick?group_count="+jQuery("#group_count").val()+"&club_member_dispatch_flag="+club_member_dispatch_flag,
+			url: "/pick?group_count="+jQuery("#group_count").val()+"&club_member_dispatch_flag="+club_member_dispatch_flag+"&gender_dispatch_flag="+gender_dispatch_flag,
 			success: function (data) {
 				jQuery("#pick_result").html(data);
 			},

@@ -21,7 +21,11 @@ class RandomPickHandler(tornado.web.RequestHandler):
         if self.get_argument('club_member_dispatch_flag', 'false') == 'true':
             club_member_dispatch_flag = True
             
-        param_dict['results'] = pick.get_pick_result(group_count, club_member_dispatch_flag)
+        gender_dispatch_flag = False
+        if self.get_argument('gender_dispatch_flag', 'false') == 'true':
+            gender_dispatch_flag = True
+            
+        param_dict['results'] = pick.get_pick_result(group_count, club_member_dispatch_flag, gender_dispatch_flag)
         param_dict['static_host'] = STATIC_HOST
         
         response = loader.load("pick_result.html").generate(params = param_dict)                    
