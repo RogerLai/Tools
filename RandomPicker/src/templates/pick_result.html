@@ -1,0 +1,23 @@
+<div class="center">
+	<div class="top_stat"><h2>结果</h2></div>				
+	<table class="table">
+		<tr class="row">
+		  <td class="cell"></td>
+		{% for group_name in params.get('results', {}).get('group_names', []) %}
+		  <td class="cell">{{ group_name }}</td>
+		{% end %} 
+		</tr>
+	{% for i in range(params.get('results', {}).get('max_row',0)) %}
+		<tr class="row">
+			<td class="cell">{{ i+1 }}</td>
+			{% for j in range(params.get('results', {}).get('group_count',0)) %}
+				{% if params.get('results', {}).get('matrix',{}).get(j)[i] is not None %}
+	   				<td class="cell">{{ params.get('results', {}).get('matrix',{}).get(j)[i] }}</td>
+	   			{% else %}
+	   				<td class="cell"></td>
+	   			{% end %}
+			{% end %}
+	    </tr>
+	{% end %}
+	</table>
+</div>
