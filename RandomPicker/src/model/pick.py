@@ -16,10 +16,12 @@ def get_pick_result(group_count, club_member_dispatch_flag = False):
     all_staff = staff_db.get_all_staff()
     for staff in all_staff:
         v = random.random()
+        if club_member_dispatch_flag == True and staff['is_club_member'] == 1:
+            v = v + 1
         staff['random_value'] = v 
     
     # sort the staff
-    all_staff.sort(key=lambda x: x['random_value'], reverse = False)
+    all_staff.sort(key=lambda x: x['random_value'], reverse = True)
         
     result['group_names'] = []
     result['group_count'] = group_count
@@ -40,8 +42,12 @@ def get_pick_result(group_count, club_member_dispatch_flag = False):
             max_row = max_row + 1
             index = 0
     
-    if index >0:
+    if index > 0:
         max_row = max_row + 1
         
     result['max_row'] = max_row  
     return result 
+
+if __name__ == "__main__":
+    result = get_pick_result(4, True)
+    print result
