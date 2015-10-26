@@ -15,8 +15,11 @@ def get_pick_result(group_count, club_member_dispatch_flag = False, gender_dispa
     
     all_staff = staff_db.get_all_staff()
     for staff in all_staff:
-        v = random.random()
+        v = random.random()                
         if club_member_dispatch_flag == True and staff['is_club_member'] == 1:
+            v = v + 1000
+            
+        if staff['is_partner'] == 1:
             v = v + 100
             
         if gender_dispatch_flag == True and staff['gender'] == 2:
