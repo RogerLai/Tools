@@ -20,8 +20,9 @@ jQuery(document).ready(function () {
 		}
 		
 		jQuery.ajax({
-			type: "get",
-			url: "/pick?group_count="+jQuery("#group_count").val()+"&club_member_dispatch_flag="+club_member_dispatch_flag+"&gender_dispatch_flag="+gender_dispatch_flag,
+			type: "post",
+			url: "/pick",
+			data: { group_count: jQuery("#group_count").val(), club_member_dispatch_flag: club_member_dispatch_flag, gender_dispatch_flag: gender_dispatch_flag},
 			success: function (data) {
 				jQuery("#pick_result").html(data);
 			},

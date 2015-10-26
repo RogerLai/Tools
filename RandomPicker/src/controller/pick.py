@@ -14,7 +14,7 @@ loader = tornado.web.template.Loader(TEMPLATE_PATH)
 
 class RandomPickHandler(tornado.web.RequestHandler):
     @staticmethod
-    def get_handler(self):
+    def post_handler(self):
         param_dict = {}        
         group_count = int(self.get_argument('group_count', 0))
         club_member_dispatch_flag = False
@@ -31,5 +31,5 @@ class RandomPickHandler(tornado.web.RequestHandler):
         response = loader.load("pick_result.html").generate(params = param_dict)                    
         return response
         
-    def get(self):
-        self.write(process.process_request(self.request, lambda: RandomPickHandler.get_handler(self), 'html'))
+    def post(self):
+        self.write(process.process_request(self.request, lambda: RandomPickHandler.post_handler(self), 'html'))
