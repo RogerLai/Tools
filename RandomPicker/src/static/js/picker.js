@@ -6,6 +6,9 @@ jQuery(document).ready(function () {
 			jQuery("#error_msg").html("<span class=\"error\">请先填写分组数量.</span>");
 			return;
 		}
+		else{
+			jQuery("#error_msg").html("");
+		}
 		
 		var club_member_dispatch_flag = false
 		if(jQuery("#club_member_dispatch_flag").get(0).checked==true)
