@@ -1,0 +1,59 @@
+.main{
+	margin: 0 auto  0 auto; 
+	width: 960px; 
+	position: relative; 
+	padding: 20px 0
+}
+
+.top_stat{
+	display: inline-block;
+	padding-right: 50px;
+}
+
+.search{
+	display: block;
+	padding: 10px 200px;
+}
+
+#content{	
+	text-align: center;
+	padding-top: 20px;
+}
+
+.table{
+	text-align: center;
+	margin: 10 auto  10 auto; 
+}
+
+.login_table{
+	text-align: center;
+	padding: 10px 300px; 
+}
+
+.row{
+	align:center;
+}
+
+.cell{
+	text-align: center;
+	padding: 5px 20px;
+}	
+
+.welcome{
+	text-align: center;
+	padding: 20px 200px;
+}	
+
+.no_result{
+	text-align: center;
+}
+
+.center{
+	text-align: center;
+	padding: 10px 10px;
+}
+
+.error{
+	color: #CC0000;
+	padding: 10px 0px;
+}
