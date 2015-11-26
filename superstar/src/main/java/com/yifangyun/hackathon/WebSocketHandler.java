@@ -56,6 +56,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
     private static final String WEBSOCKET_PATH = "/websocket";
     
     private static int rewardLevel;
+    private static int finishedTaskCount;
     private static ArrayList<Task> tasks = new ArrayList<Task>();
     private static ArrayList<Integer> statusList = new ArrayList<Integer>();
     private static Map<Integer, Integer> statusIdToInfoMapping = new HashMap<Integer, Integer>();
@@ -66,6 +67,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
             .valueOf("userSessionInfo");
     
     static {
+        finishedTaskCount = 0;
+                
         statusList.add(0);
         statusList.add(1);
         statusList.add(2);
@@ -263,6 +266,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
             int receiverId;
             int workerId;
             int statusId;
+            int percent;
             Collection<Channel> channels;
             BaseResponse response;
             switch (actionTypeId) {
@@ -307,11 +311,13 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 if (statusIdToTasksMapping.get(currentTask.getEndStatusId()).size() == 1) {
                     taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.ACCEPTED);
                     statusIdToInfoMapping.put(currentTask.getEndStatusId(), TaskStatus.ACCEPTED);
+                    finishedTaskCount ++;
                 }
                 else {
                     taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.DONE);
                 }                
                 
+                percent = (finishedTaskCount * 100) / tasks.size();
                 ArrayList<Task> taskList = statusIdToTasksMapping.get(currentTask.getEndStatusId());
                 statusId = currentTask.getEndStatusId();                    
                 int statusInfo = statusIdToInfoMapping.get(statusId);
@@ -325,7 +331,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                     channels = ChannelManager.getChannelByUserID(receiverId);
                     for (Channel ch:channels) {
                         response = new BaseResponse(actionTypeId, OK_STATUS_CODE);                        
-                        BaseAction actionInfo = new BaseAction(taskId, statusId, statusInfo);
+                        BaseAction actionInfo = new BaseAction(taskId, statusId, statusInfo, percent);
                         response.setActionInfo(actionInfo);
                         if (!ch.isOpen()) {
                             continue;
@@ -355,16 +361,18 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 }
                 
                 if (flag == true) {
+                    finishedTaskCount ++;
                     statusIdToInfoMapping.put(statusId, TaskStatus.ACCEPTED);
                 }
                 else {
                     break;
                 }
                 
+                percent = (finishedTaskCount * 100) / tasks.size();
                 channels = ChannelManager.getAllChannels();
                 for (Channel ch:channels) {
                     response = new BaseResponse(actionTypeId, OK_STATUS_CODE);
-                    BaseAction actions = new BaseAction(taskId, statusId, statusIdToInfoMapping.get(statusId));
+                    BaseAction actions = new BaseAction(taskId, statusId, statusIdToInfoMapping.get(statusId), percent);
                     response.setActionInfo(actions);
                     if (!ch.isOpen()) {
                         continue;

@@ -18,10 +18,21 @@ public class BaseAction {
     
     @SerializedName("status_info")
     protected int statusInfo;
+    
+    @SerializedName("percentage")
+    protected int percentage;
 
     public BaseAction(int taskId, int statusId, int statusInfo) {
         this.statusInfo = statusInfo;
         this.statusId = statusId;
         this.taskId = taskId;
+        this.percentage = 0;
+    }
+    
+    public BaseAction(int taskId, int statusId, int statusInfo, int percent) {
+        this.statusInfo = statusInfo;
+        this.statusId = statusId;
+        this.taskId = taskId;
+        this.percentage = percent;
     }
 }
