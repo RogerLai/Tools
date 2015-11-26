@@ -351,6 +351,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 
                 taskList = statusIdToTasksMapping.get(currentTask.getEndStatusId());
                 
+                finishedTaskCount ++;
+                
                 // check if all tasks related to this status are accepted
                 boolean flag = true;
                 for (Task t:taskList) {
@@ -360,12 +362,8 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                     }
                 }
                 
-                if (flag == true) {
-                    finishedTaskCount ++;
+                if (flag == true) {                    
                     statusIdToInfoMapping.put(statusId, TaskStatus.ACCEPTED);
-                }
-                else {
-                    break;
                 }
                 
                 percent = (finishedTaskCount * 100) / tasks.size();
@@ -384,7 +382,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 taskId = reqJson.get("action_info").getAsInt();
                 workerId = taskIdToTaskMapping.get(taskId).getWorkerId();
                 statusId = taskIdToTaskMapping.get(taskId).getEndStatusId();
-                taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.REJECTED);
+                taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.WORKING);
                 
                 channels = ChannelManager.getChannelByUserID(workerId);
                 for (Channel ch:channels) {

@@ -29,7 +29,12 @@ public class Task {
         this.setStartStatusId(startStatusId);
         this.setEndStatusId(endStatusId);
         
-        status = TaskStatus.CREATED;
+        if (tid <= 4) {
+            status = TaskStatus.WORKING;
+        }        
+        else{
+            status = TaskStatus.CREATED;
+        }
     }
     
     public String getName() {
