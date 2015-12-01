@@ -1,0 +1,11 @@
+{% if params.get('error_msg') is not None %}
+	<span class="error">请求执行失败: {% block error_msg %}{{params.get('error_msg')}}{% end %}, 请稍后重试</span>
+{% else %}
+	<span class="error">请求执行失败，请稍后重试</span>
+{% end %}
+
+{% if params.get('back_url') is not None %}
+	<span><a href="{% block back_url %}{{params.get('back_url')}}{% end %}">返回</a></span>
+{% end %}
+
+

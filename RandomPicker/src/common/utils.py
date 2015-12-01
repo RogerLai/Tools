@@ -78,4 +78,7 @@ def str_in_clause(str_list):
         return ''      
     
 def format_date_to_str(date_obj):
+    if date_obj is None:
+        return ''
+    
     return date_obj.strftime('%m-%d-%Y')

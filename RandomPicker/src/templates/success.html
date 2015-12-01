@@ -1,0 +1,5 @@
+<span>请求执行成功!</span>
+
+{% if params.get('back_url') is not None %}
+	<span><a href="{% block back_url %}{{params.get('back_url')}}{% end %}">返回</a></span>
+{% end %}
