@@ -76,3 +76,6 @@ def str_in_clause(str_list):
         return result
     except Exception:
         return ''      
+    
+def format_date_to_str(date_obj):
+    return date_obj.strftime('%m-%d-%Y')

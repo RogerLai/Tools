@@ -89,11 +89,11 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
         
         Task taskItem = new Task(1, "后台基础框架搭建", 2, 0, 1);
         Task taskItem2 = new Task(2, "前端基础框架搭建", 1, 0, 1);
-        Task taskItem3 = new Task(3, "界面初步设计", 1, 0, 2);
-        Task taskItem4 = new Task(4, "完成界面框架", 3, 0, 2);
-        Task taskItem5 = new Task(5, "完成后台功能", 3, 2, 3);
-        Task taskItem6 = new Task(6, "完成前端功能", 2, 1, 4);
-        Task taskItem7 = new Task(7, "提供素材和交互", 1, 1, 5);
+//        Task taskItem3 = new Task(3, "界面初步设计", 1, 0, 2);
+        Task taskItem4 = new Task(4, "界面初步设计", 3, 0, 2);
+        Task taskItem5 = new Task(5, "完成界面框架", 3, 2, 3);
+        Task taskItem6 = new Task(6, "完成后台功能", 2, 1, 4);
+        Task taskItem7 = new Task(7, "完成前端功能", 1, 1, 5);
         Task taskItem8 = new Task(8, "与designer确定设计", 1, 1, 3);
         Task taskItem9 = new Task(9, "交付后台代码", 2, 4, 7);
         Task taskItem10 = new Task(10, "完成前端功能", 1, 5, 7);
@@ -102,7 +102,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
         
         tasks.add(taskItem);
         tasks.add(taskItem2);
-        tasks.add(taskItem3);
+//        tasks.add(taskItem3);
         tasks.add(taskItem4);
         tasks.add(taskItem5);
         tasks.add(taskItem6);
@@ -312,25 +312,14 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                     taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.ACCEPTED);
                     statusIdToInfoMapping.put(currentTask.getEndStatusId(), TaskStatus.ACCEPTED);
                     finishedTaskCount ++;
-                }
-                else {
-                    taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.DONE);
-                }                
-                
-                percent = (finishedTaskCount * 100) / tasks.size();
-                ArrayList<Task> taskList = statusIdToTasksMapping.get(currentTask.getEndStatusId());
-                statusId = currentTask.getEndStatusId();                    
-                int statusInfo = statusIdToInfoMapping.get(statusId);
-                
-                for (Task t:taskList) {
-                    receiverId = t.getWorkerId();
-                    if (receiverId == getCurrentUserId(channel)) {
-                        continue;
-                    }
-                                        
-                    channels = ChannelManager.getChannelByUserID(receiverId);
+                    
+                    percent = (finishedTaskCount * 100) / tasks.size();
+                    statusId = currentTask.getEndStatusId();                    
+                    int statusInfo = statusIdToInfoMapping.get(statusId);
+                                                              
+                    channels = ChannelManager.getAllChannels();
                     for (Channel ch:channels) {
-                        response = new BaseResponse(actionTypeId, OK_STATUS_CODE);                        
+                        response = new BaseResponse(ActionType.ACTION_ACCEPTED, OK_STATUS_CODE);                        
                         BaseAction actionInfo = new BaseAction(taskId, statusId, statusInfo, percent);
                         response.setActionInfo(actionInfo);
                         if (!ch.isOpen()) {
@@ -339,6 +328,32 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                         ch.writeAndFlush(new TextWebSocketFrame(GsonUtils.getGson().toJson(response)));
                     }
                 }
+                else {
+                    taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.DONE);
+                    
+                    percent = (finishedTaskCount * 100) / tasks.size();
+                    ArrayList<Task> taskList = statusIdToTasksMapping.get(currentTask.getEndStatusId());
+                    statusId = currentTask.getEndStatusId();                    
+                    int statusInfo = statusIdToInfoMapping.get(statusId);
+                    
+                    for (Task t:taskList) {
+                        receiverId = t.getWorkerId();
+                        if (receiverId == getCurrentUserId(channel)) {
+                            continue;
+                        }
+                                            
+                        channels = ChannelManager.getChannelByUserID(receiverId);
+                        for (Channel ch:channels) {
+                            response = new BaseResponse(actionTypeId, OK_STATUS_CODE);                        
+                            BaseAction actionInfo = new BaseAction(taskId, statusId, statusInfo, percent);
+                            response.setActionInfo(actionInfo);
+                            if (!ch.isOpen()) {
+                                continue;
+                            }
+                            ch.writeAndFlush(new TextWebSocketFrame(GsonUtils.getGson().toJson(response)));
+                        }
+                    }
+                }                               
                 
                 break;
             case ActionType.ACTION_ACCEPTED:
@@ -349,7 +364,7 @@ public class WebSocketHandler extends SimpleChannelInboundHandler<Object> {
                 currentTask = taskIdToTaskMapping.get(taskId);
                 taskIdToTaskMapping.get(taskId).setStatus(TaskStatus.ACCEPTED);
                 
-                taskList = statusIdToTasksMapping.get(currentTask.getEndStatusId());
+                ArrayList<Task> taskList = statusIdToTasksMapping.get(currentTask.getEndStatusId());
                 
                 finishedTaskCount ++;
                 

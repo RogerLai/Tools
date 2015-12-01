@@ -1,3 +1,4 @@
 from test import *
-from controller.pick import *
+from pick import *
+from interest_group import *
 from index import *

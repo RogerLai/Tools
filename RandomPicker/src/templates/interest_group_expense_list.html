@@ -1,0 +1,19 @@
+<div class="center">
+	<div class="top_stat"><h2>兴趣小组活动报销清单</h2></div>				
+	<table class="table">
+		<tr class="row">
+		  <td class="cell">小组名称</td>
+		  <td class="cell">活动时间</td>
+		  <td class="cell">参加人数</td>
+		  <td class="cell">报销金额</td>
+		</tr>
+	{% for item in params.get('results', {}).get('expense_list',[]) %}
+		<tr class="row">
+			<td class="cell">{{ item.get('group_info',{}).get('group_name') }}</td>
+			<td class="cell">{{ item.get('act_info',{}).get('act_date') }}</td>
+			<td class="cell">{{ item.get('act_info',{}).get('act_member_count') }}</td>
+			<td class="cell">{{ item.get('act_info',{}).get('act_total_cost') }}</td>
+	    </tr>
+	{% end %}
+	</table>
+</div>
