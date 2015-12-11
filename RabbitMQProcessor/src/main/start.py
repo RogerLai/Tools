@@ -27,25 +27,28 @@ os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 os.environ['LD_LIBRARY_PATH'] = '/usr/local/lib'
 
 def callback(ch, method, properties, body):
-    if body is not None:
+    if body is None:
         return
     
-    json_obj = utils.load_json_from_str(body)
-    for criteria_item in MOVE_CRITERIA:
-        temp_json_obj = json_obj
-        for key_path in criteria_item.get('key_path'):
-            temp_json_obj = temp_json_obj.get(key_path)
-            if temp_json_obj is None:
-                print ''
+    try:
+        json_obj = utils.load_json_from_str(body)            
+        for criteria_item in MOVE_CRITERIA:
+            temp_json_obj = json_obj
+            for key_path in criteria_item.get('key_path'):
+                temp_json_obj = temp_json_obj.get(key_path)
+                if temp_json_obj is None:
+                    print 'different path, do not move'
+                    return
+                
+            if temp_json_obj not in criteria_item.get('value_list'):
+                print 'different value, do not move'
                 return
-            
-        if temp_json_obj not in criteria_item.get('value_list'):
-            print ''
-            return
-    
-    ch.basic_ack(delivery_tag = method.delivery_tag) 
-    channel.basic_publish(exchange = RABBITMQ_EXCHANGE_NAME, routing_key = RABBITMQ_MOVE_TARGET_QUEUE_NAME, body = body, properties = pika.BasicProperties(delivery_mode = 2 ,))
-
+        
+        ch.basic_ack(delivery_tag = method.delivery_tag) 
+        channel.basic_publish(exchange = RABBITMQ_EXCHANGE_NAME, routing_key = RABBITMQ_MOVE_TARGET_QUEUE_NAME, body = body, properties = pika.BasicProperties(delivery_mode = 2 ,))
+    except Exception as e:
+        print 'process failed with exception: %s' % e
+        
 if __name__ == '__main__': 
     parameters = pika.URLParameters(RABBITMQ_URL)
     connection = pika.BlockingConnection(parameters) 
