@@ -8,14 +8,6 @@ Created on Dec 11, 2015
 
 import os
 import sys
-
-import pika
-
-from common import utils
-from common.config import RABBITMQ_QUEUE_NAME, RABBITMQ_MOVE_TARGET_QUEUE_NAME, RABBITMQ_EXCHANGE_NAME
-from common.config import RABBITMQ_URL, MOVE_CRITERIA
-
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -25,6 +17,13 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 "set the python egg cache folder to /tmp, instead of its default folder"
 os.environ['PYTHON_EGG_CACHE'] = '/tmp'
 os.environ['LD_LIBRARY_PATH'] = '/usr/local/lib'
+
+import pika
+import time
+
+from common import utils
+from common.config import RABBITMQ_QUEUE_NAME, RABBITMQ_MOVE_TARGET_QUEUE_NAME, RABBITMQ_EXCHANGE_NAME
+from common.config import RABBITMQ_URL, MOVE_CRITERIA, WRITE_TO_FILE, LOCAL_FILE_PATH
 
 def callback(ch, method, properties, body):
     if body is None:
@@ -46,6 +45,11 @@ def callback(ch, method, properties, body):
         
         ch.basic_ack(delivery_tag = method.delivery_tag) 
         channel.basic_publish(exchange = RABBITMQ_EXCHANGE_NAME, routing_key = RABBITMQ_MOVE_TARGET_QUEUE_NAME, body = body, properties = pika.BasicProperties(delivery_mode = 2 ,))
+        
+        # write the content to file
+        if WRITE_TO_FILE:
+            f.write('%s\n' % body)
+        
     except Exception as e:
         print 'process failed with exception: %s' % e
         
@@ -63,7 +67,22 @@ if __name__ == '__main__':
         channel.queue_declare(queue = RABBITMQ_MOVE_TARGET_QUEUE_NAME, durable = True, passive = True)
     except Exception as e:
         print 'the queue %s does not exist' % e
+        
+    if WRITE_TO_FILE:
+        # backup existing log file            
+        if os.path.exists(LOCAL_FILE_PATH):
+            os.rename(LOCAL_FILE_PATH, '%s.%s' % (LOCAL_FILE_PATH, long(time.time())))
+            
+        f = open(LOCAL_FILE_PATH,'w+')
          
-    channel.basic_qos(prefetch_count = 100 ) 
-    channel.basic_consume(callback, queue = RABBITMQ_QUEUE_NAME )
-    channel.start_consuming()
+    try:
+        channel.basic_qos(prefetch_count = 100 ) 
+        channel.basic_consume(callback, queue = RABBITMQ_QUEUE_NAME )
+        channel.start_consuming()
+    except KeyboardInterrupt as e:
+        print 'KeyboardInterrupt caught'
+    except Exception as e:
+        print 'exception caught: %s' % e
+    finally:
+        f.flush()
+        f.close()

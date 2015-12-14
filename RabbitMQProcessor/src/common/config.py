@@ -13,6 +13,9 @@ RABBITMQ_QUEUE_NAME = 'file_preconversion_fail_queue'
 RABBITMQ_MOVE_TARGET_QUEUE_NAME = 'file_preconversion_fail_queue_temp'
 RABBITMQ_EXCHANGE_NAME = 'job_queues_exchange'
 
+WRITE_TO_FILE = True
+LOCAL_FILE_PATH = '/Users/rogerlai/Documents/logs/rabbit_mq.log'
+
 MOVE_CRITERIA = [{
     'key_path': ['convert_kinds', 'image_128', 'format'],
     'value_list': ['jpg']
