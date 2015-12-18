@@ -6,9 +6,30 @@ Created on Oct 21, 2015
 '''
 
 import random
+from random import randint
 
 from db import staff_db
 
+def get_pair_pick_result():
+    result = []
+    staffs = staff_db.get_all_staff(True)
+    pairs = staff_db.get_staff_id_mapping()
+    min_id = 1
+    max_id = 5
+    id_occupied = {}
+    for item in pairs:
+        while True:
+            random_value = randint(min_id, max_id)
+            if random_value != item['pair_id'] and id_occupied.get(random_value) is None:
+                item['gift_id'] = random_value
+                item['staff_name'] = staffs.get(item['staff_id'], {}).get('name')
+                id_occupied[random_value] = True
+                break
+            
+        result.append(item)
+    
+    result.sort(key=lambda x: x['gift_id'], reverse = False) 
+    return result
 
 def get_pick_result(group_count, club_member_dispatch_flag = False, gender_dispatch_flag = False):
     result = {}

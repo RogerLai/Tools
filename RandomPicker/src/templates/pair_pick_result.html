@@ -1,0 +1,15 @@
+<div class="center">
+	<div class="top_stat"><h2>结果</h2></div>				
+	<table class="table">
+		<tr class="row">
+		  <td class="cell">礼物编号</td>
+		  <td class="cell">员工姓名</td>
+		</tr>
+	{% for item in params.get('results', []) %}
+		<tr class="row">
+			<td class="cell">{{ item.get('gift_id') }}</td>
+			<td class="cell">{{ item.get('staff_name') }}</td>
+	    </tr>
+	{% end %}
+	</table>
+</div>

@@ -33,3 +33,16 @@ class RandomPickHandler(tornado.web.RequestHandler):
         
     def post(self):
         self.write(process.process_request(self.request, lambda: RandomPickHandler.post_handler(self), 'html'))
+        
+class RandomPairPickHandler(tornado.web.RequestHandler):
+    @staticmethod
+    def post_handler(self):
+        param_dict = {}            
+        param_dict['results'] = pick.get_pair_pick_result()
+        param_dict['static_host'] = STATIC_HOST
+        
+        response = loader.load("pair_pick_result.html").generate(params = param_dict)                    
+        return response
+        
+    def post(self):
+        self.write(process.process_request(self.request, lambda: RandomPairPickHandler.post_handler(self), 'html'))        
