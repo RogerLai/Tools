@@ -11,23 +11,40 @@ from random import randint
 from db import staff_db
 
 def get_pair_pick_result():
-    result = []
     staffs = staff_db.get_all_staff(True)
     pairs = staff_db.get_staff_id_mapping()
     min_id = 1
     max_id = 5
-    id_occupied = {}
-    for item in pairs:
-        while True:
-            random_value = randint(min_id, max_id)
-            if random_value != item['pair_id'] and id_occupied.get(random_value) is None:
-                item['gift_id'] = random_value
-                item['staff_name'] = staffs.get(item['staff_id'], {}).get('name')
-                id_occupied[random_value] = True
-                break
+           
+    while True:        
+        result = []
+        occupied_id_list = []
+        restart_flag = False
+        print 'start an round'
+        for item in pairs:
+            count = 0
+            while True:            
+                if count >= len(pairs):
+                    restart_flag = True
+                    break
+                
+                random_value = randint(min_id, max_id)
+                if random_value != item['pair_id'] and random_value not in occupied_id_list:
+                    item['gift_id'] = random_value
+                    item['staff_name'] = staffs.get(item['staff_id'], {}).get('name')
+                    occupied_id_list.append(random_value)
+                    break
+                
+                count += 1
             
-        result.append(item)
-    
+            if restart_flag:
+                break
+             
+            result.append(item)
+        
+        if not restart_flag:
+            break
+            
     result.sort(key=lambda x: x['gift_id'], reverse = False) 
     return result
 
