@@ -11,21 +11,27 @@
 <div class="main">
 	<div id="content" class="center">
 		<div id="settings_header">
-			<div class="top_stat"><h2>设置</h2></div>
+			<div class="top_stat"><input type="button" value="圣诞礼物随机分配" id="pair_pick_btn"/></div>
+			<div class="top_stat"><input type="button" value="公司活动随机分组" id="group_pick_btn"/></div>
 		</div>
-		<div id="settings_header">
-			<div class="top_stat">
-				<input id="club_member_dispatch_flag" type="checkbox" value ="true"> club小组成员平均分配到各组				
+		<div id="group_random_pick_div" style="display:none">
+			<div id="settings_header">
+				<div class="top_stat"><h2>随机分组设置</h2></div>
 			</div>
-			<div class="top_stat">
-				<input id="gender_dispatch_flag" type="checkbox" value ="true"> 男女平均分配				
+			<div id="settings_header">
+				<div class="top_stat">
+					<input id="club_member_dispatch_flag" type="checkbox" value ="true"> club小组成员平均分配到各组				
+				</div>
+				<div class="top_stat">
+					<input id="gender_dispatch_flag" type="checkbox" value ="true"> 男女平均分配				
+				</div>
+				<div class="top_stat">
+					小组数量：<input type="text" id="group_count">				
+				</div>
 			</div>
-			<div class="top_stat">
-				小组数量：<input type="text" id="group_count">				
+			<div id="actions" class="center">
+				<input type="button" value="GO" id="pick_btn"/>
 			</div>
-		</div>
-		<div id="actions" class="center">
-			<input type="button" value="GO" id="pick_btn"/>
 		</div>
 		<div id="error_msg"></div>
 		<div id="pick_result"></div>

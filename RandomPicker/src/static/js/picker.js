@@ -35,6 +35,27 @@ jQuery(document).ready(function () {
 		});
 	});
 	
+	jQuery("#group_pick_btn").click(function(){
+		jQuery("#group_random_pick_div").show();
+		jQuery("#pick_result").html("");
+	});
+	
+	jQuery("#pair_pick_btn").click(function(){
+		jQuery("#group_random_pick_div").hide();
+		jQuery("#pick_result").html("");
+		jQuery.ajax({
+			type: "post",
+			url: "/pair_pick",
+			data: {},
+			success: function (data) {
+				jQuery("#pick_result").html(data);
+			},
+			error: function () {
+				alert("请求失败，请稍后重试");
+			}
+		});
+	});
+	
 	jQuery("#add_expense_btn").click(function(){	
 		if(jQuery("#act_member_count").val()=='')
 		{
