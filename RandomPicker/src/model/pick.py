@@ -13,8 +13,9 @@ from db import staff_db
 def get_pair_pick_result():
     staffs = staff_db.get_all_staff(True)
     pairs = staff_db.get_staff_id_mapping()
-    min_id = 1
-    max_id = 5
+    min_and_max_info = staff_db.get_min_and_max_pair_id()
+    min_id = min_and_max_info.get('MIN_ID')
+    max_id = min_and_max_info.get('MAX_ID')
            
     while True:        
         result = []
